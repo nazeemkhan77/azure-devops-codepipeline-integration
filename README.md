@@ -29,6 +29,16 @@ This documentation provides the steps to setup AWS CodePipeline, Azure DevOps, S
 3. Enter a friend name for the repo access token in the `Generate Token` field and click `Generate`.
 4. Copy the token string by clicking the `copy` button and save it somwhere. You cannot retrieve this again.
 
+## AWS Codepipeline
+
+### CodePipeline Setup
+1. Log into the AWS Account and select `CodePipeline` service
+2. Click `Create Pipeline` button
+3. Under the `Pipeline Settings`, enter the pipeline name.
+4. Expand the `Advanced settings`
+5. Make sure the `Default Location` option is selected under `Artifact Store` and `Default AWS Managed Key` option under the `Encryption key` section
+6. 
+
 ## JFrog Setup
 
 ### Install JFrog Instance
