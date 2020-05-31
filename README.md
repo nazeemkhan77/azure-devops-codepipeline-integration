@@ -2,17 +2,23 @@
 
 This documentation provides the steps to setup AWS CodePipeline, Azure DevOps, SonarQube and JFrog integrations.
 
-## Azure DevOps Repository
-## Sonarqube Project
-## Configuration
-## Azure DevOps WebHooks with AWS Services
-## Configure Azure DevOps Repo WebHook Trigger
+Pre-Requisites
+- Azure DevOps Repository
+- Sonarqube Project
+- Sonarqube Configuration
+- Azure DevOps WebHooks with AWS Services
+- Configure Azure DevOps Repo WebHook Trigger
 
 ## Azure DevOps Setup
-1. Log into the Azure Devops account
-2. Create an organization
-3. Create a repo by importing existing repo from GitHub
-4. Create a Personal Access Token for AWS CodePipeline to download the repo codebase as zip file
+1. Log into the Azure Devops Portal https://dev.azure.com/
+2. Click `New Organization` link to create an organization
+3. Enter the oranization name and select `Central US` from the list under `We'll host your projects in`, and click `Next`
+4. In the `Create a project to get started', enter the project name and click `+ Create Project`button. 
+5. Import the existing [GitHub project](https://github.com/in28minutes/spring-unit-testing-with-junit-and-mockito) into the new repo following the steps in the [link](https://docs.microsoft.com/en-us/azure/devops/repos/git/import-git-repository?view=azure-devops)
+6. Click on the `User Settings` icon and select `Personal Access Token` to create the token for AWS CodePipeline to download the repo codebase as zip file
+7. Click `+ New Token` button and provide a user-friendly name (for ex, aws-codepipeline-access-token)
+8. Under the Scopes, select `Read` under Code section to provide read access to the token consumer.
+9. Click `Create` button to complete the setup.
 
 
 ## Sonarqube Setup
@@ -38,7 +44,7 @@ This documentation provides the steps to setup AWS CodePipeline, Azure DevOps, S
 3. Enter a friend name for the repo access token in the `Generate Token` field and click `Generate`.
 4. Copy the token string by clicking the `copy` button and save it somwhere. You cannot retrieve this again.
 
-## Configuration
+## Sonarqube Configuration
 1. Log into AWS Management Console and select `Secrets Manager`
 2. Click on the `Store a new secret` button
 3. Select `Other types of secrets` in the Select secret type
@@ -56,7 +62,7 @@ This documentation provides the steps to setup AWS CodePipeline, Azure DevOps, S
 2. Click on this [link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?stackName=Azure-DevOps-to-Amazon-S3&templateURL=https://aws-quickstart.s3.amazonaws.com/quickstart-git2s3/templates/git2s3.template)
 3. Click `Next` button
 4. Enter the Output S3 Bucket Name as `azure-repo-codebase'
-6. In the Allowed IPs, enter the value 13.89.236.72,52.165.41.252,52.173.25.16,13.86.38.60,20.45.1.175,13.86.36.181,52.158.209.56
+6. In the Allowed IPs, enter the `Azure DevOps Services IPs for the Regional Identity Service - Central United States` value 13.89.236.72,52.165.41.252,52.173.25.16,13.86.38.60,20.45.1.175,13.86.36.181,52.158.209.56 (Refer the [link](https://docs.microsoft.com/en-us/azure/devops/migrate/migration-import?view=azure-devops#azure-devops-services-ips) for different region) 
 7. In the Git Personal Access Token, paste the AzureDevOps Personal Access Token value created in the section `Azure DevOps Setup` step 5.
 8. In the Quick Start S3 Bucket Name, enter the value `Azure-DevOps-WebHooks`
 9. In the Quick Start S3 Key Prefix, enter the value `Assets/`
