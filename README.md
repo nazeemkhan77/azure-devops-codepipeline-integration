@@ -72,6 +72,53 @@ Pre-Requisites
 13. Click `Create stack` to complete the setup
 14. After the stack creation is completed, go to the `Outputs` tab and copy the value of key name `ZipDownloadWebHookApi`
 15. Go to the section `Configure Azure DevOps Repo WebHook Trigger` and follow the steps 1-12.
+16. Go to `Lambda` service and select the `AzureRepo-to-Amazon-S3-ZipDlLambda` lambda function to edit.
+17. In the code editor, replace the following existing code
+
+```
+    if 'X-Hub-Signature' in event['params']['header'].keys():
+        hostflavour = 'githubent'
+    elif 'X-Gitlab-Event' in event['params']['header'].keys():
+        hostflavour = 'gitlab'
+    elif 'User-Agent' in event['params']['header'].keys():
+        if event['params']['header']['User-Agent'].startswith('Bitbucket-Webhooks'):
+            hostflavour = 'bitbucket'
+        elif event['params']['header']['User-Agent'].startswith('GitHub-Hookshot'):
+            hostflavour = 'github'
+        elif 'Bitbucket-' in event['params']['header']['User-Agent']:
+            hostflavour = 'bitbucket-server'
+    elif event['body-json']['publisherId'] == 'tfs':
+        hostflavour='tfs'
+```
+with this new code snippet
+
+```
+    if event['body-json']['publisherId'] == 'tfs':
+        hostflavour='tfs'
+    elif 'X-Hub-Signature' in event['params']['header'].keys():
+        hostflavour = 'githubent'
+    elif 'X-Gitlab-Event' in event['params']['header'].keys():
+        hostflavour = 'gitlab'
+    elif 'User-Agent' in event['params']['header'].keys():
+        if event['params']['header']['User-Agent'].startswith('Bitbucket-Webhooks'):
+            hostflavour = 'bitbucket'
+        elif event['params']['header']['User-Agent'].startswith('GitHub-Hookshot'):
+            hostflavour = 'github'
+        elif 'Bitbucket-' in event['params']['header']['User-Agent']:
+            hostflavour = 'bitbucket-server'
+```
+18. Similarly, replace the following line
+
+```
+        archive_url = event['body-json']['resourceContainers']['account']['baseUrl'] + 'DefaultCollection/' + event['body-json']['resourceContainers']['project']['id'] + '/_apis/git/repositories/' + event['body-json']['resource']['repository']['id'] + '/items'
+```
+
+with this code
+
+```
+        archive_url = event['body-json']['resourceContainers']['account']['baseUrl'] + event['body-json']['resourceContainers']['project']['id'] + '/_apis/git/repositories/' + event['body-json']['resource']['repository']['id'] + '/items'
+```
+19. Click the `Save` button to complete the code change
 
 ## Configure Azure DevOps Repo WebHook Trigger
 
