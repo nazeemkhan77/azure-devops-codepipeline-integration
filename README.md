@@ -159,6 +159,23 @@ with this code
 19. Select the region where the pipline s3 bucket is located
 20. Select `OutputArtifact` fromt the list under `Input Artifacts`
 21. Click `Create project` to create `CodeBuild Project Setup for Quality Gate`
+22. Goto IAM service and search for the service role associated with Unit Test build project.
+23. Click + Add inline policy to add inline policy to give access to read the secret manager key
+24. Click JSON tab and paste the following json snippet:
+
+```JSON
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "secretsmanager:GetSecretValue",
+            "Resource": "<secret ARN>"
+        }
+    ]
+}
+```
 
 ### CodeBuild Project Setup for Unit Test
 1. Enter the build project name (preferrably, prefix `-unit-test` with the pipeline name)
@@ -231,6 +248,15 @@ phases:
        - if [ $(jq -r '.projectStatus.status' result.json) = ERROR ] ; then $CODEBUILD_BUILD_SUCCEEDING -eq 0 ;fi
 ```
 8. Click `continue to pipeline` button. It will take you back to the section `CodePipeline Setup` step 8.
+
+### Trigger CodePipeline
+1. Log into the Azure DevOps portal and select the Repo
+2. Select any file (for ex, readme.md) and click `Edit` button
+3. Make some changes (doesn't matter what change it is)
+4. Click `Save` button
+5. Click `Commit` button in the commit dialog screen to trigger the pipeline
+5. Goto AWS CodePipeline and select the pipeline name
+6. Check for the build is triggered
 
 ## JFrog Setup
 
