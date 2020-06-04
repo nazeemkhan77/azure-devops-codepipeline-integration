@@ -143,7 +143,7 @@ with this code
 3. Under the `Pipeline Settings`, enter the pipeline name.
 4. Expand the `Advanced settings`
 5. Make sure the `Default Location` option is selected under `Artifact Store` and `Default AWS Managed Key` option under the `Encryption key` section
-6. Under the `Source`, select Amazon S3 and select the bucket name (step TBD)
+6. Under the `Source`, select Amazon S3 and enter the bucket name `azure-repo-codebase` (specified in the step 4 under the section `Azure DevOps WebHooks with AWS Services`) and paste the S3 object key as `<Azure Repo Organization Name>/<repo name>/master/<repo name>.zip`
 7. Under the `Build`, select `AWS CodeBuild` option.
 8. Click `create project` button (follow the steps under the section `CodeBuild Project Setup for Unit Test`)
 9. Click the `Next` button
