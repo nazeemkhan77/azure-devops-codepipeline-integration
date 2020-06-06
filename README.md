@@ -205,25 +205,19 @@ with this code
 3. Under the `Pipeline Settings`, enter the pipeline name.
 4. Expand the `Advanced settings`
 5. Make sure the `Default Location` option is selected under `Artifact Store` and `Default AWS Managed Key` option under the `Encryption key` section
+
+### Add Source Stage
 6. Under the `Source`, select Amazon S3 and enter the bucket name `azure-repo-codebase` (specified in the step 4 under the section `Azure DevOps WebHooks with AWS Services`) and paste the S3 object key as `<Azure Repo Organization Name>/<repo name>/master/<repo name>.zip`
+
+### Add Unit Test stage
 7. Under the `Build`, select `AWS CodeBuild` option.
 8. Click `create project` button (follow the steps under the section `CodeBuild Project Setup for Unit Test`)
 9. Click the `Next` button
 10. Click `skip deploy stage` button to skip the deployment step
 11. Review the pipeline details and click `Create Pipeline` button to complete the initial pipeline step
-12. Select the pipeline name link from the list
-13. In the pipeline screen, select `Edit` to add additional stages
-14. Below Unit Test stage, click the `+ Add Stage` button to add `Quality-Gate` stage
-15. In the Add Stage, enter the stage name `Quality-Gate`.
-16. Click `+ Add action group` button to add the steps
-17. Enter `code-quality` in the `Action Name`
-18. Select `AWS CodeBuild` in the `Action provider`
-19. Select the region where the pipline s3 bucket is located
-20. Select `OutputArtifact` fromt the list under `Input Artifacts`
-21. Click `Create project` to create `CodeBuild Project Setup for Quality Gate`
-22. Goto IAM service and search for the service role associated with Unit Test build project.
-23. Click + Add inline policy to add inline policy to give access to read the secret manager key
-24. Click JSON tab and paste the following json snippet:
+12. Goto IAM service and search for the service role associated with Unit Test build project.
+13. Click + Add inline policy to add inline policy to give access to read the secret manager key
+14. Click JSON tab and paste the following json snippet:
 
 ```JSON
 {
@@ -237,7 +231,21 @@ with this code
         }
     ]
 }
-```
+16. To verify the Unit Test setup, goto azure repo, edit and update readme.md file and click commit.
+17. Check the pipeline must be triggered per above code change.
+
+
+### Add Quality Gate stage
+18. Select the pipeline name link from the list
+19. In the pipeline screen, select `Edit` to add additional stages
+20. Below Unit Test stage, click the `+ Add Stage` button to add `Quality-Gate` stage
+21. In the Add Stage, enter the stage name `Quality-Gate`.
+22. Click `+ Add action group` button to add the steps
+23. Enter `code-quality` in the `Action Name`
+24. Select `AWS CodeBuild` in the `Action provider`
+25. Select the region where the pipline s3 bucket is located
+26. Select `OutputArtifact` fromt the list under `Input Artifacts`
+27. Click `Create project` to create `CodeBuild Project Setup for Quality Gate`
 
 ### CodeBuild Project Setup for Unit Test
 1. Enter the build project name (preferrably, prefix `-unit-test` with the pipeline name)
