@@ -231,6 +231,7 @@ with this code
         }
     ]
 }
+```
 16. To verify the Unit Test setup, goto azure repo, edit and update readme.md file and click commit.
 17. Check the pipeline must be triggered per above code change.
 
