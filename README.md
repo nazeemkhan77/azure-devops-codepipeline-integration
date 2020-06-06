@@ -10,78 +10,21 @@ Pre-Requisites
 - Configure Azure DevOps Repo WebHook Trigger
 
 ## Azure DevOps Setup
+
+## Create Azure Repo (Importing existing GitHub project)
 1. Log into the Azure Devops Portal https://dev.azure.com/
 2. Click `New Organization` link to create an organization
 3. Enter the oranization name and select `Central US` from the list under `We'll host your projects in`, and click `Next`
 4. In the `Create a project to get started', enter the project name and click `+ Create Project`button. 
-5. Import the existing [GitHub project](https://github.com/in28minutes/spring-unit-testing-with-junit-and-mockito) into the new repo following the steps in the [link](https://docs.microsoft.com/en-us/azure/devops/repos/git/import-git-repository?view=azure-devops)
-6. Click the `Files` under the repo and select the `pom.xml` file.
-7. Click `Edit` button and add the following xml snippet to add code coverage plugin configuration after line 24 (under <properties> section)
+5. Import the existing [GitHub project](https://github.com/nazeemkhan77/spring-unit-testing-with-junit-and-mockito) into the new repo following the steps in the [link](https://docs.microsoft.com/en-us/azure/devops/repos/git/import-git-repository?view=azure-devops)
+6. Click the `Files` under the repo and you should see project files listed
 
-```XML
-   <jacoco.version>0.8.3</jacoco.version>
-   <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-   <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-   <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>  
-   <sonar.language>java</sonar.language>
-```
-8. Similarly, add the following xml configuration after the line 65 (under <plugins> section) and click `Commit` button to save the changes
 
-```XML
-   <plugin>
-       <groupId>org.jacoco</groupId>
-       <artifactId>jacoco-maven-plugin</artifactId>
-       <version>${jacoco.version}</version>
-       <configuration>
-      <skip>${maven.test.skip}</skip>
-      <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
-      <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
-      <output>file</output>
-      <append>true</append>
-      <excludes>
-          <exclude>*MethodAccess</exclude>
-      </excludes>
-       </configuration>
-       <executions>
-      <execution>
-          <id>jacoco-initialize</id>
-          <goals>
-         <goal>prepare-agent</goal>
-          </goals>
-          <phase>test-compile</phase>
-      </execution>
-      <execution>
-          <id>jacoco-site</id>
-          <phase>verify</phase>
-          <goals>
-         <goal>report</goal>
-          </goals>
-      </execution>
-       </executions>
-   </plugin>
-```
-9. Update the following xml configuration
-```XML
-<artifactId>unit-testing</artifactId>
-```
-with
-```XML
-<artifactId>spring-unit-testing-with-junit-and-mockito</artifactId>
-```
-10. Similarly, update the below xml configuration
-```XML
-<name>unit-testing</name>
-```
-with
-```XML
-<name>spring-unit-testing-with-junit-and-mockito</name>
-```
-
-11. Click on the `User Settings` icon and select `Personal Access Token` to create the token for AWS CodePipeline to download the repo codebase as zip file
-12. Click `+ New Token` button and provide a user-friendly name (for ex, aws-codepipeline-access-token)
-13. Under the Scopes, select `Read` under Code section to provide read access to the token consumer.
-14. Click `Create` button to complete the setup.
-
+## Generate Personal Access Token
+7. Click on the `User Settings` icon and select `Personal Access Token` to create the token for AWS CodePipeline to download the repo codebase as zip file
+8. Click `+ New Token` button and provide a user-friendly name (for ex, aws-codepipeline-access-token)
+9. Under the Scopes, select `Read` under Code section to provide read access to the token consumer.
+10. Click `Create` button to complete the setup.
 
 ## Sonarqube Setup
 
@@ -125,7 +68,7 @@ with
 3. Click `Next` button
 4. Enter the Output S3 Bucket Name as `azure-repo-codebase'
 6. In the Allowed IPs, enter the `Azure DevOps Services IPs for the Regional Identity Service - Central United States` value 13.89.236.72,52.165.41.252,52.173.25.16,13.86.38.60,20.45.1.175,13.86.36.181,52.158.209.56 (Refer the [link](https://docs.microsoft.com/en-us/azure/devops/migrate/migration-import?view=azure-devops#azure-devops-services-ips) for different region) 
-7. In the Git Personal Access Token, paste the AzureDevOps Personal Access Token value created in the section `Azure DevOps Setup` step 11.
+7. In the Git Personal Access Token, paste the AzureDevOps Personal Access Token value created in the sub-section `Generate Personal Access Token` step 7.
 8. In the Quick Start S3 Bucket Name, enter the value `Azure-DevOps-WebHooks`
 9. In the Quick Start S3 Key Prefix, enter the value `Assets/`
 10. Click `Next`
