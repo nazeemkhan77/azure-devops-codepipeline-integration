@@ -276,6 +276,8 @@ phases:
 
 ### Install JFrog Artifactory
 
+In this section, follow the steps to configure JFrog instance using the Open Source JFrog Artifactory from the AWS Marketplace and start the artifactory instance.
+
 1. Log into the AWS Account and select the Region where the AWS CodePipeline project will be created.
 2. Goto AWS Marketplace and click Discover products
 3. Search for 'JFrog Open Source' and select it from the list
@@ -293,8 +295,62 @@ sudo su
 cd /home/ubuntu/artifactory-oss-6.8.2/bin
 ./artifactory.sh
 ```
-12. After the `Artifactory successfully started` message, open the browser and type the URL http://hostname:8081/artifactory.
+12. After the `Artifactory successfully started` message, open the browser and type the URL http://<ec2-instance-public-hostname>:8081/artifactory.
 13. Login with the admin credentials, admin/password.
 14. Open the ec2 instance security group and check the inbound rules for ports 22 and 8081 must be opened. Port 22 must be allowed from specific ip and 8081 must be opened for all (0.0.0.0).
 
+### Setup Maven Repository
+
+After the JFrog Artifactory is setup and running, a Maven repostiory needs to setup to resolve and deploy artifacts and plugins. 
+
+1. Login with the admin credentials, admin/password.
+2. Click the link `Welcome, admin` and select `Quick Setup` to create maven repository
+3. Select `Maven` from the repositories and click `create` button.
+4. Under `Set Me Up` section, you should see the following repository keys for snapshot and release
+   a. lib-snapshot
+   b. lib-snapshot-local
+   c. lib-release
+   d. lib-release-local
+5. Now the Maven repository setup is completed.
+
+### Configure Maven Project to publish artifacts to JFrog Artifactory
+
+Maven project configurations are stored in pom.xml file. In this section, we will configure the maven-artifactory sections to integrate with JFrog Artifactory.
+
+First, we will configure the plugin and dependency for the artifactory-maven
+1. Add the following xml configuration under the <dependencies> section for the `artifactory-maven-plugin`
+   ```XML
+   		<dependency>
+			<groupId>org.jfrog.buildinfo</groupId>
+			<artifactId>artifactory-maven-plugin</artifactId>
+			<version>2.7.0</version>
+			<type>pom</type>
+		</dependency>
+   ```
+2. Similarly, add the configuration for the `artifactory-maven-plugin` with artifactory connection details
+   ```XML
+   <plugin>
+       <groupId>org.jfrog.buildinfo</groupId>
+       <artifactId>artifactory-maven-plugin</artifactId>
+       <version>2.7.0</version>
+       <inherited>false</inherited>
+       <executions>
+           <execution>
+               <id>build-info</id>
+               <goals>
+                   <goal>publish</goal>
+               </goals>
+               <configuration>
+                   <publisher>
+                       <contextUrl>${artifactory.url}</contextUrl>
+                       <username>${artifactory.username}</username>
+                       <password>${artifactory.password}</password>
+                       <repoKey>libs-release-local</repoKey>
+                       <snapshotRepoKey>libs-snapshot-local</snapshotRepoKey>							
+                   </publisher>
+               </configuration>
+           </execution>
+       </executions>
+   </plugin>
+   ```
 
