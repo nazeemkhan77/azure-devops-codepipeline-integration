@@ -295,7 +295,7 @@ sudo su
 cd /home/ubuntu/artifactory-oss-6.8.2/bin
 ./artifactory.sh
 ```
-12. After the `Artifactory successfully started` message, open the browser and type the URL http://<ec2-instance-public-hostname>:8081/artifactory.
+12. After the `Artifactory successfully started` message, open the browser and type the URL http://ec2-instance-public-hostname:8081/artifactory. (Replace the ec-instance-public-hostname with the actual value)
 13. Login with the admin credentials, admin/password.
 14. Open the ec2 instance security group and check the inbound rules for ports 22 and 8081 must be opened. Port 22 must be allowed from specific ip and 8081 must be opened for all (0.0.0.0).
 
