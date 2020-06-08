@@ -354,3 +354,59 @@ First, we will configure the plugin and dependency for the artifactory-maven
    </plugin>
    ```
 
+## Add Publish Artifacts stage
+In this section, new stage for building and publishing artifacts to JFrog Artifactory will be added in the existing pipeline.
+1. Log into the AWS Management Console and select Code Pipeline service,
+2. Select the pipeline name link from the pipelines list and click `Edit` button.
+3. Goto the Code-Quality step and click the below button `+ Add Stage` to add new build step. 
+4. Enter the action name `Publish-Artifacts' and click `Add Stage` button
+5. Click `+ Add Action Group` button.
+6. Enter the Action name `publish-artifacts`, select `AWS CodeBuild` under Action Provider, select `Source Artifact` under Input Artifacts and click `Create Project` button to create `CodeBuild Project Setup for Publish Artifacts`
+
+### CodeBuild Project Setup for Publish Artifacts
+1. Enter the build project name (pipeline name prefix with -publish-artifacts)
+2. Under `Environment` section, select `Managed Image`
+3. Select `Ubuntu` for the operation system
+4. Select `Standard` for the runtime
+5. Select `aws/codebuild/standard:4.0` for the image. (Refer the [link](https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-available.html) for which OS and image should be selected based on the lanaguge version.)
+6. Under buildsepc, select `insert build commands` option and click `switch to editor` link
+7. In the `build commands` text editor, update with the following code and update the Project variable with the sonarqube project name
+
+```YAML
+version: 0.2
+
+env:
+  variables:
+      Project: "spring-unit-testing-with-junit-and-mockito"
+  secrets-manager:
+      USER: dev/artifactory:user
+      PASSWORD: dev/artifactory:password
+      URL: dev/artifactory:url
+phases:
+  install:
+    #If you use the Ubuntu standard image 2.0 or later, you must specify runtime-versions.
+    #If you specify runtime-versions and use an image other than Ubuntu standard image 2.0, the build fails.
+    runtime-versions:
+       java: openjdk8
+  build:
+    commands:
+       - mvn deploy -e -X -Dartifactory.url=$URL -Dartifactory.username=$USER -Dartifactory.password=$PASSWORD
+artifacts:
+  files:
+    - '**/*'
+  base-directory: 'target'
+```
+## JFrog Artifactory Configuration
+In this section, we create secret manager configuration to store the JFrog Artifactory configurtion.
+
+1. Log into AWS Management Console and select `Secrets Manager`
+2. Click on the `Store a new secret` button
+3. Select `Other types of secrets` in the Select secret type
+4. Under the secret key/value, add the following key/value pairs
+   a. key: url, value: <paste the JFrog Artifactory URL`.
+   b. key: username, value: admin
+   c. key: password, value: <encrypted password>
+5. Click `Next` button
+6. Enter the secret name value `dev/artifactory` and click `Next` button
+7. Click `Next` button
+8. Click `Store` button to complete the setup
