@@ -307,10 +307,10 @@ After the JFrog Artifactory is setup and running, a Maven repostiory needs to se
 2. Click the link `Welcome, admin` and select `Quick Setup` to create maven repository
 3. Select `Maven` from the repositories and click `create` button.
 4. Under `Set Me Up` section, you should see the following repository keys for snapshot and release
-   a. lib-snapshot
-   b. lib-snapshot-local
-   c. lib-release
-   d. lib-release-local
+   * lib-snapshot
+   * lib-snapshot-local
+   * lib-release
+   * lib-release-local
 5. Now the Maven repository setup is completed.
 
 ### Configure Maven Project to publish artifacts to JFrog Artifactory
