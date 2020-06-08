@@ -274,7 +274,7 @@ phases:
 
 ## JFrog Setup
 
-### Install JFrog Instance
+### Install JFrog Artifactory
 
 1. Log into the AWS Account and select the Region where the AWS CodePipeline project will be created.
 2. Goto AWS Marketplace and click Discover products
@@ -282,6 +282,19 @@ phases:
 4. Click `continue to subscribe` button
 5. Click `continue to configuration` button
 6. Leave the default selection under `Delivery Method` and `Software Version`
-7. Select the desired `region` from the list and click `Contineu to Launch` button.
+7. Select the desired `region` from the list and click `Continue to Launch` button. Wait for the instance to status change to READY state.
+8. Select the ec2 instance and copy the private ip address and host name.
+9. click Connect button and follow the chmod and ssh commands (use ubuntu instead of root) to remote log into the ec2 instance.
+9. Type the command `sudo vi /etc/hosts` to open the hosts file
+10. After the below first line, type the private ip and host name separated by tab space to the hosts file, save and exit from the vi.
+11. Start the artifactory by entering the following commands
+```
+sudo su
+cd /home/ubuntu/artifactory-oss-6.8.2/bin
+./artifactory.sh
+```
+12. After the `Artifactory successfully started` message, open the browser and type the URL http://hostname:8081/artifactory.
+13. Login with the admin credentials, admin/password.
+14. Open the ec2 instance security group and check the inbound rules for ports 22 and 8081 must be opened. Port 22 must be allowed from specific ip and 8081 must be opened for all (0.0.0.0).
 
 
