@@ -320,12 +320,12 @@ Maven project configurations are stored in pom.xml file. In this section, we wil
 First, we will configure the plugin and dependency for the artifactory-maven
 1. Add the following xml configuration under the <dependencies> section for the `artifactory-maven-plugin`
    ```XML
-   		<dependency>
-			<groupId>org.jfrog.buildinfo</groupId>
-			<artifactId>artifactory-maven-plugin</artifactId>
-			<version>2.7.0</version>
-			<type>pom</type>
-		</dependency>
+	<dependency>
+		<groupId>org.jfrog.buildinfo</groupId>
+		<artifactId>artifactory-maven-plugin</artifactId>
+		<version>2.7.0</version>
+		<type>pom</type>
+	</dependency>
    ```
 2. Similarly, add the configuration for the `artifactory-maven-plugin` with artifactory connection details
    ```XML
@@ -336,7 +336,7 @@ First, we will configure the plugin and dependency for the artifactory-maven
        <inherited>false</inherited>
        <executions>
            <execution>
-               <id>build-info</id>
+               <id>snapshots</id>
                <goals>
                    <goal>publish</goal>
                </goals>
@@ -353,6 +353,18 @@ First, we will configure the plugin and dependency for the artifactory-maven
        </executions>
    </plugin>
    ```
+3. Add the following XML configuration to configure the snapshot build artifact publishing artifactory details
+
+```XML
+<distributionManagement>
+	<snapshotRepository>
+		<uniqueVersion>false</uniqueVersion>
+		<id>snapshots</id>
+		<name>Spring Unit Testing With Junit and Mockito</name>
+		<url>${artifactory.url}/artifactory/libs-snapshot-local</url>
+	</snapshotRepository>
+</distributionManagement>
+```
 
 ## Add Publish Artifacts stage
 In this section, new stage for building and publishing artifacts to JFrog Artifactory will be added in the existing pipeline.
