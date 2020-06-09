@@ -368,7 +368,7 @@ In this section, new stage for building and publishing artifacts to JFrog Artifa
 2. Under `Environment` section, select `Managed Image`
 3. Select `Ubuntu` for the operation system
 4. Select `Standard` for the runtime
-5. Select `aws/codebuild/standard:4.0` for the image. (Refer the [link](https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-available.html) for which OS and image should be selected based on the lanaguge version.)
+5. Select `aws/codebuild/standard:3.0` for the image. (Refer the [link](https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-available.html) for which OS and image should be selected based on the lanaguge version.)
 6. Under buildsepc, select `insert build commands` option and click `switch to editor` link
 7. In the `build commands` text editor, update with the following code and update the Project variable with the sonarqube project name
 
