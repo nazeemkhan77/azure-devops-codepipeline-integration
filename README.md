@@ -399,6 +399,7 @@ artifacts:
 ## JFrog Artifactory Configuration
 In this section, we create secret manager configuration to store the JFrog Artifactory configurtion.
 
+### Artifactory SecretManager
 1. Log into AWS Management Console and select `Secrets Manager`
 2. Click on the `Store a new secret` button
 3. Select `Other types of secrets` in the Select secret type
@@ -410,3 +411,23 @@ In this section, we create secret manager configuration to store the JFrog Artif
 6. Enter the secret name value `dev/artifactory` and click `Next` button
 7. Click `Next` button
 8. Click `Store` button to complete the setup
+	
+### Grant ServiceRole SecretManager Permission
+
+1. Goto IAM service and search for the service role associated with `Publish Artifacts` build project.
+2. Click + Add inline policy to add inline policy to give access to read the secret manager key
+3. Click JSON tab and paste the following json snippet:
+
+```JSON
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "secretsmanager:GetSecretValue",
+            "Resource": "<dev/artifactory secret ARN>"
+        }
+    ]
+}
+```
