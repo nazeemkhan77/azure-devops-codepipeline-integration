@@ -379,7 +379,7 @@ env:
   variables:
       Project: "spring-unit-testing-with-junit-and-mockito"
   secrets-manager:
-      USER: dev/artifactory:user
+      USER: dev/artifactory:username
       PASSWORD: dev/artifactory:password
       URL: dev/artifactory:url
 phases:
@@ -403,9 +403,9 @@ In this section, we create secret manager configuration to store the JFrog Artif
 2. Click on the `Store a new secret` button
 3. Select `Other types of secrets` in the Select secret type
 4. Under the secret key/value, add the following key/value pairs
-   a. key: url, value: <paste the JFrog Artifactory URL`.
-   b. key: username, value: admin
-   c. key: password, value: <encrypted password>
+   * key: url, value: <paste the JFrog Artifactory URL`.
+   * key: username, value: admin
+   * key: password, value: <encrypted password>
 5. Click `Next` button
 6. Enter the secret name value `dev/artifactory` and click `Next` button
 7. Click `Next` button
