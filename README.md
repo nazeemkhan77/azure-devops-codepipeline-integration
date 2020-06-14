@@ -318,54 +318,134 @@ After the JFrog Artifactory is setup and running, a Maven repostiory needs to se
 Maven project configurations are stored in pom.xml file. In this section, we will configure the maven-artifactory sections to integrate with JFrog Artifactory.
 
 First, we will configure the plugin and dependency for the artifactory-maven
-1. Add the following xml configuration under the <dependencies> section for the `artifactory-maven-plugin`
-   ```XML
-	<dependency>
-		<groupId>org.jfrog.buildinfo</groupId>
-		<artifactId>artifactory-maven-plugin</artifactId>
-		<version>2.7.0</version>
-		<type>pom</type>
-	</dependency>
-   ```
-2. Similarly, add the configuration for the `artifactory-maven-plugin` with artifactory connection details
-   ```XML
-   <plugin>
-       <groupId>org.jfrog.buildinfo</groupId>
-       <artifactId>artifactory-maven-plugin</artifactId>
-       <version>2.7.0</version>
-       <inherited>false</inherited>
-       <executions>
-           <execution>
-               <id>snapshots</id>
-               <goals>
-                   <goal>publish</goal>
-               </goals>
-               <configuration>
-                   <publisher>
-                       <contextUrl>${artifactory.url}</contextUrl>
-                       <username>${artifactory.username}</username>
-                       <password>${artifactory.password}</password>
-                       <repoKey>libs-release-local</repoKey>
-                       <snapshotRepoKey>libs-snapshot-local</snapshotRepoKey>							
-                   </publisher>
-               </configuration>
-           </execution>
-       </executions>
-   </plugin>
-   ```
-3. Add the following XML configuration to configure the snapshot build artifact publishing artifactory details
+1. Add the following maven configuration inside the <properties> tag to specify the JDK 1.8 version for build and specify the code coverage plugin jacoco configuration
+
+```XML
+	<maven.compiler.source>1.8</maven.compiler.source>
+	<maven.compiler.target>1.8</maven.compiler.target>
+	<jacoco.version>0.8.3</jacoco.version>
+	<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+	<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+	<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+	<sonar.language>java</sonar.language>
+```
+
+2. Add the below plugin configurations for the maven plugins jacoco-maven-plugin and maven-compiler-plugin under the <plugins> section.
+
+```XML
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<configuration>
+		<source>1.8</source>
+		<target>1.8</target>
+	</configuration>
+</plugin>
+<plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>${jacoco.version}</version>
+    <configuration>
+	<skip>${maven.test.skip}</skip>
+	<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
+	<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
+	<output>file</output>
+	<append>true</append>
+	<excludes>
+	    <exclude>*MethodAccess</exclude>
+	</excludes>
+    </configuration>
+    <executions>
+	<execution>
+	    <id>jacoco-initialize</id>
+	    <goals>
+		<goal>prepare-agent</goal>
+	    </goals>
+	    <phase>test-compile</phase>
+	</execution>
+	<execution>
+	    <id>jacoco-site</id>
+	    <phase>verify</phase>
+	    <goals>
+		<goal>report</goal>
+	    </goals>
+	</execution>
+    </executions>
+</plugin>
+```
+3. Add the following XML configuration below the `</properties>` line to configure build artifact publishing artifactory details for SNAPSHOT and RELEASE stages
 
 ```XML
 <distributionManagement>
 	<snapshotRepository>
-		<uniqueVersion>false</uniqueVersion>
 		<id>snapshots</id>
-		<name>Spring Unit Testing With Junit and Mockito</name>
-		<url>${artifactory.url}/artifactory/libs-snapshot-local</url>
+		<name>ip-172-31-42-114-snapshots</name>
+		<url>http://${internal.repo.server.url}/artifactory/libs-snapshot-local</url>
 	</snapshotRepository>
+	<repository>
+		<id>central</id>
+		<name>ip-172-31-42-114-releases</name>
+		<url>http://${internal.repo.server.url}/artifactory/libs-release-local</url>
+	</repository>
 </distributionManagement>
 ```
-
+4. Final step, create a new empty file names `settings.xml` in the root directory of the repository and add the following xml configuration to specify the server and repository configuration
+```XML
+<settings>
+  <servers>
+    <server>
+      <username>${internal.repo.username}</username>
+      <password>${internal.repo.password}</password>
+      <id>central</id>
+    </server>
+    <server>
+      <username>${internal.repo.username}</username>
+      <password>${internal.repo.password}</password>
+      <id>snapshots</id>
+    </server>
+  </servers>
+  <profiles>
+    <profile>
+      <repositories>
+        <repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>libs-release</name>
+          <url>http://${internal.repo.server.url}/artifactory/libs-release</url>
+        </repository>
+        <repository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>libs-snapshot</name>
+          <url>http://${internal.repo.server.url}/artifactory/libs-snapshot</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>libs-release</name>
+          <url>http://${internal.repo.server.url}/artifactory/libs-release</url>
+        </pluginRepository>
+        <pluginRepository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>libs-snapshot</name>
+          <url>http://${internal.repo.server.url}/artifactory/libs-snapshot</url>
+        </pluginRepository>
+      </pluginRepositories>
+      <id>artifactory</id>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>artifactory</activeProfile>
+  </activeProfiles>
+</settings>
+```
 ## Add Publish Artifacts stage
 In this section, new stage for building and publishing artifacts to JFrog Artifactory will be added in the existing pipeline.
 1. Log into the AWS Management Console and select Code Pipeline service,
@@ -388,10 +468,8 @@ In this section, new stage for building and publishing artifacts to JFrog Artifa
 version: 0.2
 
 env:
-  variables:
-      Project: "spring-unit-testing-with-junit-and-mockito"
   secrets-manager:
-      USER: dev/artifactory:username
+      USER: dev/artifactory:user
       PASSWORD: dev/artifactory:password
       URL: dev/artifactory:url
 phases:
@@ -400,9 +478,12 @@ phases:
     #If you specify runtime-versions and use an image other than Ubuntu standard image 2.0, the build fails.
     runtime-versions:
        java: openjdk8
+  pre_build:
+    commands:
+      - cp settings.xml ~/.m2
   build:
     commands:
-       - mvn deploy -e -X -Dartifactory.url=$URL -Dartifactory.username=$USER -Dartifactory.password=$PASSWORD
+       - mvn -Dinternal.repo.username=$USER -Dinternal.repo.password=$PASSWORD -Dinternal.repo.server.url=$URL clean deploy
 artifacts:
   files:
     - '**/*'
@@ -411,14 +492,21 @@ artifacts:
 ## JFrog Artifactory Configuration
 In this section, we create secret manager configuration to store the JFrog Artifactory configurtion.
 
+### Artifactory Credentials
+In this section, follow the steps to get the admin user encrypted password to configure in the secret manager.
+1. Log into the Artifactory using admin credentials.
+2. Click on the `Welcome,admin` link right corner and select `Edit Profile`
+3. Enter the admin password in the `Current Password` field and click `Unlock` button
+4. Under the `Authentication Settings`, copy the text in the Encrypted Password text field and save it somewhere to use it during the secret manager configuration
+
 ### Artifactory SecretManager
 1. Log into AWS Management Console and select `Secrets Manager`
 2. Click on the `Store a new secret` button
 3. Select `Other types of secrets` in the Select secret type
 4. Under the secret key/value, add the following key/value pairs
-   * key: url, value: <paste the JFrog Artifactory URL`.
+   * key: url, value: <paste the JFrog Artifactory ec2 Public DNS (IPv4) name and port 8081>. For ex, ec2-54-146-7-13.compute-1.amazonaws.com:8081
    * key: username, value: admin
-   * key: password, value: <encrypted password>
+   * key: password, value: <encrypted password> (Note: Paste the admin Encrypted Password field value)
 5. Click `Next` button
 6. Enter the secret name value `dev/artifactory` and click `Next` button
 7. Click `Next` button
