@@ -331,8 +331,10 @@ After the JFrog Artifactory is setup and running, a Maven repostiory needs to se
 
 Maven project configurations are stored in pom.xml file. In this section, we will configure the maven-artifactory sections to integrate with JFrog Artifactory.
 
-First, we will configure the plugin and dependency for the artifactory-maven
-1. Add the following maven configuration inside the <properties> tag to specify the JDK 1.8 version for build and specify the code coverage plugin jacoco configuration
+First, we will configure the plugin and dependency for the artifactory-maven. 
+
+1. Go to the Azure DevOps Repo, select the pom.xml file and click Edit button.
+2. Add the following maven configuration inside the <properties> tag to specify the JDK 1.8 version for build and specify the code coverage plugin jacoco configuration
 
 ```XML
 	<maven.compiler.source>1.8</maven.compiler.source>
@@ -344,7 +346,7 @@ First, we will configure the plugin and dependency for the artifactory-maven
 	<sonar.language>java</sonar.language>
 ```
 
-2. Add the below plugin configurations for the maven plugins jacoco-maven-plugin and maven-compiler-plugin under the <plugins> section.
+3. Add the below plugin configurations for the maven plugins jacoco-maven-plugin and maven-compiler-plugin under the <plugins> section.
 
 ```XML
 <plugin>
@@ -387,7 +389,7 @@ First, we will configure the plugin and dependency for the artifactory-maven
     </executions>
 </plugin>
 ```
-3. Add the following XML configuration below the `</properties>` line to configure build artifact publishing artifactory details for SNAPSHOT and RELEASE stages
+4. Add the following XML configuration below the `</properties>` line to configure build artifact publishing artifactory details for SNAPSHOT and RELEASE stages
 
 ```XML
 <distributionManagement>
@@ -403,7 +405,7 @@ First, we will configure the plugin and dependency for the artifactory-maven
 	</repository>
 </distributionManagement>
 ```
-4. Final step, create a new empty file names `settings.xml` in the root directory of the repository and add the following xml configuration to specify the server and repository configuration
+5. Final step, create a new empty file names `settings.xml` in the root directory of the repository and add the following xml configuration to specify the server and repository configuration
 ```XML
 <settings>
   <servers>
