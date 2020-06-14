@@ -521,7 +521,7 @@ In this section, follow the steps to get the admin user encrypted password to co
 3. Select `Other types of secrets` in the Select secret type
 4. Under the secret key/value, add the following key/value pairs
    * key: url, value: <paste the JFrog Artifactory ec2 Public DNS (IPv4) name and port 8081>. For ex, ec2-54-146-7-13.compute-1.amazonaws.com:8081
-   * key: username, value: admin
+   * key: user, value: admin
    * key: password, value: <encrypted password> (Note: Paste the admin Encrypted Password field value)
 5. Click `Next` button
 6. Enter the secret name value `dev/artifactory` and click `Next` button
