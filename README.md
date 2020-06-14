@@ -294,7 +294,7 @@ In this section, follow the steps to configure JFrog instance using the Open Sou
 
 1. Log into the AWS Account and select the Region where the AWS CodePipeline project will be created.
 2. Goto AWS Marketplace and click Discover products
-3. Search for 'JFrog Open Source' and select it from the list
+3. Search for 'JFrog Open Source' and select the one from the publisher `Miri Infotech` from the list
 4. Click `continue to subscribe` button
 5. Click `continue to configuration` button
 6. Leave the default selection under `Delivery Method` and `Software Version`
