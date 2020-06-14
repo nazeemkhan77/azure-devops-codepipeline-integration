@@ -1,8 +1,9 @@
 # Azure DevOps Integration with AWS CodePipeline, SonarQube and JFrog
 
-This documentation provides the steps to setup AWS CodePipeline, Azure DevOps, SonarQube and JFrog integrations.
+This documentation provides the steps to integrate the AWS CodePipeline, Azure DevOps, SonarQube and JFrog services. 
 
-Pre-Requisites
+### Pre-Requisites
+Following are the pre-requisites setup must be completed before the setting up the AWS CodePipeline.
 - Azure DevOps Repository
 - Sonarqube Project
 - Sonarqube Configuration
@@ -10,6 +11,8 @@ Pre-Requisites
 - Configure Azure DevOps Repo WebHook Trigger
 
 ## Azure DevOps Setup
+
+In this section, we will setup the Azure DevOps Repository by cloning it from an existing GitHub spring boot project.
 
 ## Create Azure Repo (Importing existing GitHub project)
 1. Log into the Azure Devops Portal https://dev.azure.com/
@@ -19,6 +22,7 @@ Pre-Requisites
 5. Import the existing [GitHub project](https://github.com/nazeemkhan77/spring-unit-testing-with-junit-and-mockito) into the new repo following the steps in the [link](https://docs.microsoft.com/en-us/azure/devops/repos/git/import-git-repository?view=azure-devops)
 6. Click the `Files` under the repo and you should see project files listed
 
+After the repository is created, you must create a personal access token for the AWS CodePipeline to communicate with the Azure DevOps repository to get the latest code, when there is a code change happens and triggers the pipeline. Follow the below section to generate the token.
 
 ## Generate Personal Access Token
 7. Click on the `User Settings` icon and select `Personal Access Token` to create the token for AWS CodePipeline to download the repo codebase as zip file
@@ -26,11 +30,16 @@ Pre-Requisites
 9. Under the Scopes, select `Read` under Code section to provide read access to the token consumer.
 10. Click `Create` button to complete the setup.
 
+Now you have completed the AzureDevOps Repository configuration part. Let's move to the next section to setup the SonarQube project for the same repository.
+
 ## Sonarqube Setup
+In this section, we will use the sonarcloud online version of the SonarQube to create an account and setup the project to capture the repository code quality details.
 
 ### Account Setup
 1. Go to https://sonarcloud.io
 2. Login using any of the GitHub, BitBucket etc credentials
+
+After the account setup is completed, let's create the sonarqube project by following the below steps:
 
 ### Sonarqube Project Setup
 1. Click the `+` icon in top right corner
@@ -43,13 +52,18 @@ Pre-Requisites
 8. Click `Administration` and select `Organization settings`
 9. Right corner, copy the value of the label `Key:` and store it somewhere.
 
-### SonarQube Token Setup
+After the project setup is completed, we need to generate the token for the pipeline to publish the code analysis result files for the code quality analysis.
+
+### Sonarcloud Token Setup
 1. Click on the `Profile` icon and select the `account name`
 2. Click on the `Security` tab
 3. Enter a friend name for the repo access token in the `Generate Token` field and click `Generate`.
 4. Copy the token string by clicking the `copy` button and save it somwhere. You cannot retrieve this again.
 
-## Sonarqube Configuration
+Let's store the sonarcloud endpoint configuration details in the AWS Secret Manager. It is always a best practice to store the sensitive details in the secret manager to prevent hard-coding and leaking the credentails.
+
+## Sonarcloud Configuration
+In this section, we will create a new secret to store the sonarcloud endpoint details like url, token and the organization details.
 1. Log into AWS Management Console and select `Secrets Manager`
 2. Click on the `Store a new secret` button
 3. Select `Other types of secrets` in the Select secret type
